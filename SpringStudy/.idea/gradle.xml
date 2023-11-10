@@ -20,6 +20,14 @@
           </set>
         </option>
       </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Bt09_MVC" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Bt09_MVC" />
+          </set>
+        </option>
+      </GradleProjectSettings>
     </option>
   </component>
 </project>

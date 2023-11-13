@@ -1,12 +1,17 @@
 package com.lec.spring.controller1;
 
+import com.lec.spring.common.U;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.ui.Model;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 /*
      Controller
@@ -122,6 +127,140 @@ public class HomeController {
     //    request 에 대한 정보는 HttpServletRequest 객체를 통해 읽을수 있다.
     //       (url, parameter, cookie, session, header...)
     //    이는 handler 의 매개변수로 설정해놓으면 request 시 spring container 가 전달해준다.
+
+    @RequestMapping("/aaa/bbb/HttpServletRequest")
+    public void httpServletRequest(Model model, HttpServletRequest request){
+        String method = request.getMethod();  // "GET", "POST"....
+        String scheme = request.getScheme();
+        String serverName = request.getServerName();
+        int serverPort = request.getServerPort();
+
+
+        model.addAttribute("method", method);
+        model.addAttribute("scheme", scheme);
+        model.addAttribute("serverName", serverName);
+        model.addAttribute("serverPort", serverPort);
+    }
+
+    //------------------------------------------------------------
+    // @ResponseBody
+    //   자바 객체를 그대로 response 함 (view 를 사용하지 않음)
+    //   String 을 리턴하면 문자열 텍스트로 response
+    //   Java 객체를 리턴하면 JSON 으로 response
+    //       List<>, Set<>, 배열 => JSON array 로 변환
+    //       Map<> => JSON object 로 변환
+    //       Java Object => JSON object 로 변환  (Property 사용!)
+    //
+
+    @RequestMapping("/ccc")
+    @ResponseBody
+    public String ccc(){
+        return "ccc";
+    }
+    @RequestMapping("/ccc2")
+    @ResponseBody
+    public String ccc2(){
+        StringBuffer buff = new StringBuffer();
+        buff.append("<h1>Hello Spring</h1>");
+        buff.append("<h3>spring boot</h3>");
+        return buff.toString();
+    }
+
+    @RequestMapping("/ddd")
+    @ResponseBody
+    public List<Integer> ddd(){
+        return List.of(10, 20, 30);
+    }
+
+
+    @RequestMapping("/eee")
+    @ResponseBody
+    public Map<String, Integer> eee(){
+        return Map.of("국어", 100, "영어", 80, "수학", 73);
+    }
+
+    @Data
+    @AllArgsConstructor
+    class Product {
+        private int no;
+        private String name;
+        private boolean sold;
+
+        public long getAge(){
+            return 345L;
+        }
+    }
+
+    @RequestMapping("/fff")
+    @ResponseBody
+    public Product fff(){
+        return new Product(10, "자전거", false);
+    }
+
+    //----------------------------------------------------------------------
+    /**
+     * 특정 request method 에 동작하는 handler 설정 가능
+     *
+     * @RequestMapping ← 모든 (혹은 특정) request method 에 대해서 동작
+     *
+     * @GetMapping, @PostMapping, @PutMapping .. ← 특정 request method 에 대해 동작
+     *    단일 request method 에서만 동작하는 핸들러는 이를 사용하는게 간편하다
+     */
+
+    @GetMapping("/get")
+    @ResponseBody
+    public String get(HttpServletRequest request){
+        return U.requestInfo(request);
+    }
+
+    @PostMapping("/post")
+    @ResponseBody
+    public String post(HttpServletRequest request){
+        return U.requestInfo(request);
+    }
+
+    @PutMapping("/put")
+    @ResponseBody
+    public String put(HttpServletRequest request){
+        return U.requestInfo(request);
+    }
+
+    // Get, Post <- 두가지 request method 에 대해서만 동작시키기
+    @RequestMapping(value = "/getpost", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public String getpost(HttpServletRequest request){
+        return U.requestInfo(request);
+    }
+
+    // 동일 url 에 대해서도 서로 다른 request method 에 따라 '다른 동작' 을 수행할 경우
+    @GetMapping("/action")
+    @ResponseBody
+    public String action1(HttpServletRequest request){
+        return U.requestInfo(request);
+    }
+
+    @PostMapping("/action") @ResponseBody
+    public String action2(HttpServletRequest request){
+        return U.requestInfo(request);
+    }
+    @PutMapping("/action") @ResponseBody
+    public String action3(HttpServletRequest request){
+        return U.requestInfo(request);
+    }
+    @DeleteMapping("/action") @ResponseBody
+    public String action4(HttpServletRequest request){
+        return U.requestInfo(request);
+    }
+
+    // 서로 다른 url 에 대해서도 동일 handler 동작 가능
+    @RequestMapping(value = {"/act1", "/aaa/act2", "/aaa/bbb/act3"})
+    @ResponseBody
+    public String act(HttpServletRequest request) {
+        return U.requestInfo(request);
+    }
+
+
+
 
 
 

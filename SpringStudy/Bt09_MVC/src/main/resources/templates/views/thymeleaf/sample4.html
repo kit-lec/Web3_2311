@@ -80,8 +80,15 @@
         </tr>
     </table>
 
+    test1: <span th:if="${test1}" th:text="${test1}"></span><br>  <!-- "aaa"  참 -->
+    test2: <span th:if="${test2}" th:text="${test2}"></span><br>  <!-- ""  참 -->
+    test3: <span th:if="${test3}" th:text="${test3}"></span><br>  <!-- null 거짓 -->
+    test4: <span th:if="${test4}" th:text="${test4}"></span><br>  <!-- false 거짓 -->
 
-
+    <!-- null 혹은 empty 문자열 -->
+    empty: <span th:if="${not #strings.isEmpty(test1)}" th:text="${test1}"></span><br>
+    empty: <span th:if="${not #strings.isEmpty(test2)}" th:text="${test2}"></span><br>
+    empty: <span th:if="${not #strings.isEmpty(test3)}" th:text="${test3}"></span><br>
 
 
 

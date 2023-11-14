@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>sample8</title>
+</head>
+<body>
+<!--
+    th:insert => 자식으로 fragment 삽입
+    th:replace => 해당 element 를 fragment 로 치환
+-->
+    <div th:insert="~{thymeleaf/fragments/header::head1}">
+    </div>
+
+    <div th:insert="~{thymeleaf/fragments/footer::foot1}">
+    </div>
+
+    <ul>
+        <span th:replace="~{thymeleaf/fragments/footer::menu1}"></span>
+        <span th:replace="~{thymeleaf/fragments/footer::menu2}"></span>
+    </ul>
+
+
+
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</body>
+</html>
+
+
+
+
+
+

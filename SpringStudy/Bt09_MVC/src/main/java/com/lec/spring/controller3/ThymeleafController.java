@@ -3,6 +3,7 @@ package com.lec.spring.controller3;
 import com.lec.spring.domain.Member;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDateTime;
@@ -100,6 +101,29 @@ public class ThymeleafController {
         model.addAttribute("test3", null);
         model.addAttribute("test4", false);
 
+    }
+
+    // attribute 방식 vs. inline 방식
+    @RequestMapping("/sample5")
+    public void sample5(Model model){
+        model.addAttribute("result", "SUCCESS");
+    }
+
+    // Expression Utility Object
+    @GetMapping("/sample7")
+    public void sample7(Model model){
+        model.addAttribute("now1", LocalDateTime.now());    // java.time.LocalDateTime
+        model.addAttribute("now2", new Date());   // java.util.Date
+        model.addAttribute("price", 123456789);
+        model.addAttribute("title", "This is sample");
+        model.addAttribute("options", Arrays.asList("AAAA", "BBB", "CCC", "DDD"));  // List<>
+    }
+
+    // fragment
+    @GetMapping("/sample8")
+    public void sample8(Model model){
+        model.addAttribute("value1", "John");
+        model.addAttribute("url1", "sample1");
     }
 
 }

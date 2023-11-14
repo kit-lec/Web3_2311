@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>/sample7</h1>
+    <!-- #temporals 는 LocalDateTime, LodalDate, LocalTime -->
+    <h1 th:text="${now1}"></h1>  <!-- toString() -->
+    <h1 th:text="${#temporals.format(now1)}"></h1>  <!-- locale 문자열 (기본)  2023년 11월 8일 오후 2:31:08 -->
+    <h1 th:text="${#temporals.format(now1, 'yyyy-MM-dd HH:mm:ss')}"></h1>
+
+    <!-- #dates 는 Date 를 다룸 -->
+    <h1 th:text="${now2}"></h1>
+    <h1 th:text="${#dates.format(now2, 'yyyy-MM-dd')}"></h1>
+
+    <div th:with="timeValue = ${#temporals.createNow()}">
+        <p th:text="${timeValue}"></p>
+    </div>
+
+    <hr>
+    <h2 th:text="${price}"></h2>
+    <h2 th:text="${#numbers.formatInteger(price, 3, 'COMMA')}"></h2>
+
+    <div th:with="priceValue=2099.87654">
+        <p th:text="${priceValue}"></p>
+        <p th:text="${#numbers.formatInteger(priceValue, 3, 'COMMA')}"></p>
+        <p th:text="${#numbers.formatDecimal(priceValue, 5, 10, 'POINT')}"></p>
+        <p th:text="${#numbers.formatDecimal(priceValue, 5, 2, 'POINT')}"></p>
+        <p th:text="${#numbers.formatDecimal(priceValue, 3, 'COMMA', 2, 'POINT')}"></p>
+    </div>
+
+    <h1 th:text="${title}"></h1>
+    <h1 th:utext="${#strings.replace(title, 's', '<u>s</u>')}"></h1>
+
+    <ul>
+        <li th:each="str : ${#strings.listSplit(title, ' ')}" th:text="${str}"></li>
+    </ul>
+
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</body>
+</html>
+
+

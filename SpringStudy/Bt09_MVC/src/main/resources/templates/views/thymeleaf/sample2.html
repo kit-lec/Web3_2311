@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <h4 th:text="m"></h4>
+  <h4 th:text="${m}"></h4> <!-- ${ }  객체, 변수 표현.  객체의 경우 toString()값이 표현 -->
+
+  <div th:text="${'aaa'}"></div>
+  <div th:text="${aaa}"></div>
+  <div th:text="${'aaa' + 'bbb'}"></div>
+  <div th:text="${aaa + 'bbb'}"></div>
+<!--  <div th:text="${aaa + bbb}"></div> -->
+
+  <hr>
+
+  <div th:text="${10 + 20}"></div>
+  <div th:text="${10 - 20}"></div>
+  <div th:text="${10 * 20}"></div>
+  <div th:text="${10 / 20}"></div>
+  <div th:text="${10.0 / 20}"></div>
+  <div th:text="${10 % 3}"></div>
+
+  <hr>
+
+  <div th:text="10 + 20"></div>
+  <div th:text="10 - 20"></div>
+  <div th:text="m + 20"></div>
+  <div th:text="'m 20'"></div>
+<!--  <div th:text="m 20"></div>-->
+
+  <hr>
+  <div th:text="${m.name}"></div>  <!-- m.getName() -->
+  <div th:text="${m.regdate}"></div>  <!-- m.getRegdate() -->
+  <div th:text="${m.no}"></div>
+  <div th:text="${m.id}"></div>
+<!--  <div th:text="${m.age}"></div>-->
+
+  <div th:text="${m.nick}"></div>  <!-- m.getNick() -->
+  <div th:text="${m.Nick}"></div>  <!-- m.getNick() -->
+<!--  <div th:text="${m.nIck}"></div>-->
+
+  <br>
+  <!-- 변수 표현식 안에선 논리 연산자 사용 가능 -->
+  <div th:text="${true && false}">내용</div>
+  <div th:text="${!false}">내용</div>
+  <div th:text="${true || false}">내용</div>
+  <div th:text="${true and false}">내용</div>
+  <div th:text="${not false}">내용</div>
+  <div th:text="${true or false}">내용</div>
+
+  <!-- 삼항연산자 -->
+  <div th:text="(10 > 4) ? 'big' : 'small'"></div>
+
+  <!-- escaping 하기  What's up? 출력 -->
+  <h3>escaping 하기</h3>
+  <div th:text="${'What''s up?'}">내용</div>  <!-- ${} 안에서 '' 두개 -->
+
+
+
+
+
+
+
+  <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -17,4 +17,6 @@ public class Member {
     private String pw;
     private String name;
     private LocalDateTime regdate;
+
+    public String getNick() { return "뜨거운 아아"; }
 }

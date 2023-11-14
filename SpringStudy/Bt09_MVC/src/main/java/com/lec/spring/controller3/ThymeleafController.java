@@ -78,6 +78,30 @@ public class ThymeleafController {
 
     }
 
+    // th:each
+    // #temporals : java.time.* 객체를 다루기 위한 유틸리티 객체
+    @RequestMapping("/sample3")
+    public void sample3(Model model){
+        model.addAttribute("list", list2);
+    }
+    
+    // th:with  변수선언
+    // th:if, th:unless   조건부 렌더링
+    // #strings  :  문자열 다루기 위한 표현식 유틸리티 객체
+    @RequestMapping("/sample4")
+    public void sample4(Model model){
+        list2.get(3).setId(null);
+        model.addAttribute("list", list2);
+        model.addAttribute("map2", map2);
+
+        // th:if  에서 어케 판정될까?
+        model.addAttribute("test1", "aaa");
+        model.addAttribute("test2", "");
+        model.addAttribute("test3", null);
+        model.addAttribute("test4", false);
+
+    }
+
 }
 
 

@@ -58,12 +58,37 @@
   <h3>escaping 하기</h3>
   <div th:text="${'What''s up?'}">내용</div>  <!-- ${} 안에서 '' 두개 -->
 
+  <hr>
+  <h2>배열, List, Map</h2>
+  <div th:text="${arr1}">내용</div>
+  <div th:text="${arr2}">내용</div>
+  <div th:text="${list1}">내용</div>
+  <div th:text="${list2}">내용</div>
+  <div th:text="${map1}">내용</div>
+  <div th:text="${map2}">내용</div>
 
+  <div th:text="${arr1[0]}">내용</div>
+  <div th:text="${arr1[1]}">내용</div>
+  <div th:text="${arr1[4]}">내용</div>
 
+  <div th:text="${arr2[0]}">내용</div>
+  <div th:text="${arr2[1]}">내용</div>
+  <div th:text="${arr2[1].name}">내용</div>
+  <div th:text="${arr2[1].regdate}">내용</div>
 
+  <div th:text="${list1[0]}">내용</div>  <!-- List 도 배열처럼 [] 로 원소 접근 가능 -->
+  <div th:text="${list1[1]}">내용</div>
+  <div th:text="${list1[4]}">내용</div>
 
+  <div th:text="${list2[3].name}">내용</div>
+  <div th:text="${list2[3].regdate}">내용</div>
 
+  <div th:text="${map1[0]}"></div>  <!-- key:0 의 값 -->
 
+  <div th:text="${map2[AAA]}"></div>   <!-- map2.get("AAA") -->
+  <div th:text="${map2.AAA}"></div>   <!-- map2.get("AAA") -->
+
+  <div th:text="${map2.BBB.name}"></div> <!-- map2.get("BBB").getName() -->
   <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 </body>
 </html>

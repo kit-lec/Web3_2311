@@ -1,10 +1,12 @@
 package com.lec.spring.controller4;
 
 import com.lec.spring.domain.Post;
+import com.lec.spring.domain.User;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -131,6 +133,126 @@ public class UserController {
      *     xml 이나 json 기반의 메시지를 사용하는 경우 유용.
      */
     // ※ 테스트는 Postman 등으로 진행
+
+    @PostMapping("/test01")
+    @ResponseBody
+    public User userTest01(int age, String name){
+        User user = new User(age, name);
+        return user;
+    }
+    // parameter 없으면 에러 -> int 인 경우
+    // POST 요청
+    //  ① query string  ?age=10&name=Juni  OK
+    //  ② x-www-form-urlencoded 방식  OK
+    //  ③ form-data 방식  OK
+    //  ④ raw-json  (불가!)  500에러
+
+    @PostMapping("/test02")
+    @ResponseBody
+    public User userTest02(User user){return user;}
+    //  ① query string  ?age=10&name=Juni2  // OK
+    //  ② x-www-form-urlencoded 방식  // OK
+    //  ③ form-data 방식  // OK
+    //  ④ raw-json  => 모두 null 값 (binding 된게 없다!)
+
+    @PostMapping("/test03")
+    @ResponseBody
+    public User userTest03(@RequestBody  User user){return user;}
+    //  ① ?age=10&name=Juni (에러 400 Bad Request : Required request body is missin)
+    //  ② x-www-form-urlencoded 방식 (에러 415) Unsupported Media Type Content-Type 'application/x-www-form-urlencoded;charset=UTF-8' is not supported
+    //  ③ form-data 방식  (에러 415) Unsupported Media Type  Content-Type 'multipart/form-data  .. is not supported
+    //  ④ raw-json  => OK
+
+    // @RequestHeader(key) : header value 도 받아올수 있다.
+    @PostMapping("/test04")
+    @ResponseBody
+    public String usetTest04(
+            @RequestBody User user,
+            @RequestHeader("x-auth") String auth, // 이 경우 x-auth 가 없으면 에러 (required=true 가 디폴트)
+            @RequestHeader(value = "x-key", required = false, defaultValue = "UVUV") String key
+    ){
+        return """
+                User: %s
+                auth: %s
+                key: %s
+                """.formatted(user, auth, key);
+    }
+
+    //----------------------------------------------------------------------------
+    /**
+     * @PathVariable 사용
+     *
+     *  request url 을 통해 parameter 를 받는 방법은 다음 방법들이 있다
+     *   /API_NAME?key1=val1   <-- query string 사용
+     *   /API_NAME/{value1}    <-- path variable 사용
+     */
+
+    @RequestMapping("/writePath/{name}/{subject}/{k3}")
+    @ResponseBody
+    public String writePathBoard(
+            @PathVariable String name,
+            @PathVariable String subject,
+            @PathVariable(name="k3") String content
+    ){
+        return """
+                name: %s<br>
+                subject: %s<br>
+                content: %s<br>
+                """.formatted(name, subject, content);
+    }
+
+    //-----------------------------------
+    // redirect
+    //  "redirect:{url}" 을 리턴 => redirect 를 response
+    //   redirect 의 response code 는 3xx
+
+    @RequestMapping("/ageInput")
+    public void ageInput(){}
+
+    @RequestMapping("/ageCheck")
+    public String chkAge(int age
+                , RedirectAttributes redirectAttributes){  // redirect 되는 request 에 담을 parameter 지정
+
+        redirectAttributes.addAttribute("age", age);   // "age" 라는 parameter 지정. query string 에 담겨 간다.
+
+        if(age < 19){
+            return "redirect:/user/underAge";   // View 를 리턴하는게 아니라 redirect 된다!
+        } else {
+            return "redirect:/user/adult";
+        }
+    }
+
+    @RequestMapping("/underAge")
+    @ResponseBody
+    public String pageUnderAge(int age){
+        return """
+                미성년자입니다<br>
+                나이: %s 살, %s 년 뒤에 사용 가능<br>                
+                """.formatted(age, 19 - age);
+    }
+    @RequestMapping("/adult")
+    @ResponseBody
+    public String pageAdult(int age){
+        return """
+                성인 입니다<br>  
+                나이: %d살<br>              
+                """.formatted(age);
+    }
+
+    //----------------------------------------------------
+    // forward:
+    @RequestMapping("/detail")
+    public String memberDetail(){
+        System.out.println("/user/detail 요청");
+        return "forward:/user/notfound";
+    }
+
+    @RequestMapping("/notfound")
+    @ResponseBody
+    public String memberNotFound(){
+        System.out.println("/user/notfound 요청");
+        return "/user/notfound";
+    }
 
 
 }

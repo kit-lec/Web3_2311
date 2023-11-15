@@ -1,12 +1,10 @@
 package com.lec.spring.controller4;
 
+import com.lec.spring.domain.Post;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,9 +107,30 @@ public class UserController {
 
     // 기존의 방식대로라면
     // 매 parameter 들을 매개변수화 하는 것은 힘들다.
+    @PostMapping("/writeOk")
+//    @ResponseBody
+//    public String writeOkBoard(String name, String subject, String content){
+//        String result = "name=" + name + ", subject=" + subject + ", content=" + content;
+//        return result;
+//    }
 
+    // Java 객체에 바인딩될때
+    // 내부적으로 '기본생성자로 생성' 한뒤
+    // set property 를 사용하여 각 parameter 를 Java객체에 binding 합니다
 
+    // 커맨드 객체는 기본적으로 '객체타입명'으로 Model attribute 추가 된다. (소문자로)
+    // Model attribute name 을 바꿀경우 @ModelAttribute 로 지정
+    public void writeOkBoard(@ModelAttribute("DTO") Post post){
+        System.out.println("/writeOk: " + post);
+    }
 
+    //--------------------------------------------------------------
+    /**
+     * @RequestBody 가 핸들러의 파라미터에 붙으면
+     *     HTTP요청의 본문(body)이 그대로 전달
+     *     xml 이나 json 기반의 메시지를 사용하는 경우 유용.
+     */
+    // ※ 테스트는 Postman 등으로 진행
 
 
 }

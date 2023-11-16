@@ -20,18 +20,18 @@
 <div class="container mt-3">
     <h2>작성</h2>
     <hr>
-    <form action="#">
+    <form th:action="@{/board/write}" method="post">
         <div class="my-3">
             <label for="user">작성자:</label>
             <input type="text" class="form-control" id="user" placeholder="작성자를 입력하세요" name="user" required>
         </div>
-        <div><span class="text-danger">작성자는 필수입니다</span></div>
+        <div><span class="text-danger"></span></div>
 
         <div class="my-3">
             <label for="subject">제목:</label>
             <input type="text" class="form-control" id="subject" placeholder="제목을 입력하세요" name="subject" required>
         </div>
-        <div><span class="text-danger">제목은 필수입니다</span></div>
+        <div><span class="text-danger"></span></div>
 
         <div class="my-3">
             <label for="content">내용:</label>
@@ -39,7 +39,7 @@
         </div>
 
         <button type="submit" class="btn btn-outline-dark">작성완료</button>
-        <a class="btn btn-outline-dark" href="#">목록</a>
+        <a class="btn btn-outline-dark" th:href="@{/board/list}">목록</a>
     </form>
 
 </div>

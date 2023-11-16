@@ -34,34 +34,20 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>1</td>
-            <td><a href="https://www.naver.com">Hello</a> </td>
-            <td>John</td>
-            <td>23</td>
-            <td>2021-03-21</td>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>Hello </td>
-            <td>John</td>
-            <td>23</td>
-            <td>2021-03-21</td>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>Hello </td>
-            <td>John</td>
-            <td>23</td>
-            <td>2021-03-21</td>
-        </tr>
+            <tr th:each="post : ${list}">
+                <td th:text="${post.id}"></td>
+                <td><a th:href="@{'/board/detail/' + ${post.id}}" th:text="${post.subject}"></a></td>
+                <td th:text="${post.user}"></td>
+                <td th:text="${post.viewCnt}"></td>
+                <td th:text="${#temporals.format(post.regDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            </tr>
         </tbody>
     </table>
     <!-- 목록 -->
 
     <div class="row">
         <div class="col-12">
-            <a class="btn btn-outline-dark" href="#">작성</a>
+            <a class="btn btn-outline-dark" th:href="@{/board/write}">작성</a>
         </div>
     </div>
 </div>

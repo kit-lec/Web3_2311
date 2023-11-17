@@ -34,6 +34,10 @@
         </div>
 
         <section>
+            <form name="frmDelete" th:action="@{/board/delete}" method="post">
+                <input type="hidden" name="id" th:value="${post.id}">
+            </form>
+
             <div class="mb-3">
                 <label>작성자:</label>
                 <div class="border bg-light rounded p-2" th:text="${post.user}"></div>

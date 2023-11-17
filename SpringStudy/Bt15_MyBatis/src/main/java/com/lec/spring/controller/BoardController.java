@@ -39,8 +39,23 @@ public class BoardController {
         model.addAttribute("list", boardService.list());
     }
 
-    @GetMapping("/update")
-    public void update(){}
+    @GetMapping("/update/{id}")
+    public String update(@PathVariable Long id, Model model){
+        model.addAttribute("post", boardService.selectById(id));
+        return "board/update";
+    }
+
+    @PostMapping("/update")
+    public String updateOk(Post post, Model model){
+        model.addAttribute("result", boardService.update(post));
+        return "board/updateOk";
+    }
+
+    @PostMapping("/delete")
+    public String deleteOk(Long id, Model model){
+        model.addAttribute("result", boardService.deleteById(id));
+        return "board/deleteOk";
+    }
 
 }
 

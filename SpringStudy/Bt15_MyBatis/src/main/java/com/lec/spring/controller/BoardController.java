@@ -46,6 +46,12 @@ public class BoardController {
             //    '객체'로 값을 그대로 전달
 
 
+            // redirect시 기존에 입력했던 값들은 보이게 하기
+            redirectAttrs.addFlashAttribute("user", post.getUser());
+            redirectAttrs.addFlashAttribute("subject", post.getSubject());
+            redirectAttrs.addFlashAttribute("content", post.getContent());
+
+
             List<FieldError> errList = result.getFieldErrors();
             for(FieldError err : errList){
                 redirectAttrs.addFlashAttribute("error_" + err.getField(), err.getCode());
@@ -71,12 +77,33 @@ public class BoardController {
 
     @GetMapping("/update/{id}")
     public String update(@PathVariable Long id, Model model){
-        model.addAttribute("post", boardService.selectById(id));
+        Post post = boardService.selectById(id);
+        model.addAttribute("post", post);
         return "board/update";
     }
 
     @PostMapping("/update")
-    public String updateOk(Post post, Model model){
+    public String updateOk(
+            @Valid Post post
+            , BindingResult result
+            , Model model
+            , RedirectAttributes redirectAttrs
+    ){
+        if(result.hasErrors()){
+
+            // redirect시 기존에 입력했던 값들은 보이게 하기
+            redirectAttrs.addFlashAttribute("subject", post.getSubject());
+            redirectAttrs.addFlashAttribute("content", post.getContent());
+
+            List<FieldError> errList = result.getFieldErrors();
+            for(FieldError err : errList){
+                redirectAttrs.addFlashAttribute("error_" + err.getField(), err.getCode());
+            }
+
+            return "redirect:/board/update/" + post.getId();
+        }
+
+
         model.addAttribute("result", boardService.update(post));
         return "board/updateOk";
     }

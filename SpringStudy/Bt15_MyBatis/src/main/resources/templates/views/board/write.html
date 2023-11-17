@@ -23,19 +23,21 @@
     <form th:action="@{/board/write}" method="post">
         <div class="my-3">
             <label for="user">작성자:</label>
-            <input type="text" class="form-control" id="user" placeholder="작성자를 입력하세요" name="user">
+            <input type="text" class="form-control" id="user" placeholder="작성자를 입력하세요" name="user" th:value="${user}">
+            <span class="text-danger" th:if="${error_user}" th:utext="${error_user}"></span>
         </div>
         <div><span class="text-danger"></span></div>
 
         <div class="my-3">
             <label for="subject">제목:</label>
-            <input type="text" class="form-control" id="subject" placeholder="제목을 입력하세요" name="subject">
+            <input type="text" class="form-control" id="subject" placeholder="제목을 입력하세요" name="subject" th:value="${subject}">
+            <span class="text-danger" th:if="${error_subject}" th:utext="${error_subject}"></span>
         </div>
         <div><span class="text-danger"></span></div>
 
         <div class="my-3">
             <label for="content">내용:</label>
-            <textarea class="form-control" rows="5" id="content" placeholder="내용을 입력하세요" name="content"></textarea>
+            <textarea class="form-control" rows="5" id="content" placeholder="내용을 입력하세요" name="content" th:utext="${content}"></textarea>
         </div>
 
         <button type="submit" class="btn btn-outline-dark">작성완료</button>

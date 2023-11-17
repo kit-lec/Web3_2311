@@ -38,14 +38,16 @@
             <div class="mb-3">
                 <label>작성자:</label>
                 <span class="form-control" readonly th:text="${post.user}"></span>
+                <input type="hidden" name="user" th:value="${post.user}"/>  <!-- validation 땜에 필요 -->
             </div>
             <div class="mb-3 mt-3">
                 <label for="subject">제목:</label>
-                <input type="text" class="form-control" id="subject" placeholder="제목을 입력하세요" name="subject" th:value="${post.subject}">
+                <input type="text" class="form-control" id="subject" placeholder="제목을 입력하세요" name="subject" th:value="${subject} ? ${subject} : ${post.subject}">
+                <span class="text-danger" th:if="${error_subject}" th:utext="${error_subject}"></span>
             </div>
             <div class="mb-3 mt-3">
                 <label for="content">내용:</label>
-                <textarea class="form-control" rows="5" id="content" placeholder="내용을 입력하세요" name="content" th:utext="${post.content}"></textarea>
+                <textarea class="form-control" rows="5" id="content" placeholder="내용을 입력하세요" name="content" th:utext="${content} ? ${content} : ${post.content}"></textarea>
             </div>
 
             <!-- 하단 링크 -->

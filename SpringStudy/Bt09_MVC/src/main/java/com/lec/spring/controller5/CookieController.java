@@ -95,6 +95,14 @@ public class CookieController {
         return "cookie/loginOk";
     }
 
+    @PostMapping("/logout")
+    public String logout(HttpServletResponse response){
+        Cookie cookie = new Cookie("username", "");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "cookie/logout";
+    }
+
 
 }
 

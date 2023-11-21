@@ -29,7 +29,7 @@
     <insert id="save" flushCache="true" parameterType="com.lec.spring.domain.User"
         useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO t5_user(username, password, name, email)
-        VALUE(#{username}, #{password}, #{name}, #{email})
+        VALUES(#{username}, #{password}, #{name}, #{email})
     </insert>
 
     <update id="update" flushCache="true" parameterType="com.lec.spring.domain.User">

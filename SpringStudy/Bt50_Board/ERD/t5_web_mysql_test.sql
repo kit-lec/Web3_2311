@@ -1,7 +1,7 @@
 SHOW TABLES;
 
 SELECT TABLE_NAME FROM information_schema.TABLES
-WHERE TABLE_SCHEMA = 'mydb'
+WHERE TABLE_SCHEMA = 'mydb2309'
 AND TABLE_NAME LIKE 't5_%'
 ;
 
@@ -38,3 +38,6 @@ SELECT a.id "id", a.name "auth_name"
 FROM t5_authority a, t5_user_authorities u 
 WHERE a.id = u.authority_id  AND  u.user_id = 3
 ;
+
+
+

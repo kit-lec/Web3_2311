@@ -25,4 +25,23 @@ public class UserController {
         System.out.println("/user/login [POST] 가 호출되나?");   // .loginProcessingUrl() 가 설정되어 있으면 호출안된다.
     }
 
+    // onAuthenticationFailure 에서 로그인 실패시 forwarding 용
+    // request 에 담겨진 attribute 는 Thymeleaf 에서 그대로 표현 가능.
+    @PostMapping("/loginError")
+    public String loginError(){
+        return "user/login";
+    }
+
+    @RequestMapping("/rejectAuth")
+    public String rejectAuth(){
+        return "common/rejectAuth";
+    }
+
 }
+
+
+
+
+
+
+

@@ -21,10 +21,10 @@ public class PostValidator implements Validator {
 
         System.out.println("validate() 호출 : " + post);
 
-        String user = post.getUser();
-        if(user == null || user.trim().isEmpty()){
-            errors.rejectValue("user", "작성자는 필수입니다");
-        }
+//        String user = post.getUser();
+//        if(user == null || user.trim().isEmpty()){
+//            errors.rejectValue("user", "작성자는 필수입니다");
+//        }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "subject", "글 제목은 필수입니다");
     }

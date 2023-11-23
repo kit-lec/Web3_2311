@@ -26,9 +26,10 @@ import java.time.LocalDateTime;
 @Builder
 public class Post {
     private Long id;
-    private String user;
     private String subject;
     private String content;
     private LocalDateTime regDate;
     private Long viewCnt;
+
+    private User user;   // 글 작성자 (FK)
 }

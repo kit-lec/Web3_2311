@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="utf-8">
@@ -9,6 +11,7 @@
 
     <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
 
+    <script src="https://kit.fontawesome.com/51772bd9bd.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 
     <script th:src="@{/js/list.js}"></script>
@@ -39,7 +42,7 @@
             <tr th:each="post : ${list}">
                 <td th:text="${post.id}"></td>
                 <td><a th:href="@{'/board/detail/' + ${post.id}}" th:text="${post.subject}"></a></td>
-                <td th:text="${post.user}"></td>
+                <td th:text="${post.user.username}"></td>
                 <td th:text="${post.viewCnt}"></td>
                 <td th:text="${#temporals.format(post.regDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
             </tr>
@@ -49,10 +52,14 @@
 
     <div class="row">
         <div class="col-12">
-            <a class="btn btn-outline-dark" th:href="@{/board/write}">작성</a>
+            <a class="btn btn-outline-dark" th:href="@{/board/write}" sec:authorize="hasAnyRole('ADMIN', 'MEMBER')">작성</a>
         </div>
     </div>
 </div>
+
+<!-- pagination -->
+<th:block th:insert="~{board/pagination::pagination}"></th:block>
+<!-- pagination -->
 
 </body>
 </html>

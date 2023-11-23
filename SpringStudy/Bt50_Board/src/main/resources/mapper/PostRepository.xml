@@ -77,6 +77,19 @@
         parameterType="com.lec.spring.domain.Post">
         DELETE FROM t5_post WHERE id = #{id}
     </delete>
+
+    <!-- 페이징 용 쿼리 -->
+    <select id="selectFromRow" resultMap="mapPost">
+        <include refid="SELECT_BASE"/>
+        ORDER BY p.id DESC
+        LIMIT #{param1}, #{param2}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT count(*) FROM t5_post
+    </select>
+
+
 </mapper>
 
 

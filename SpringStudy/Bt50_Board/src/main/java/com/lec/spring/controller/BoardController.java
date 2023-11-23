@@ -71,8 +71,9 @@ public class BoardController {
     }
 
     @GetMapping("/list")
-    public void list(Model model){
-        model.addAttribute("list", boardService.list());
+    public void list(Integer page, Model model){
+        //model.addAttribute("list", boardService.list());
+        boardService.list(page, model);
     }
 
     @GetMapping("/update/{id}")

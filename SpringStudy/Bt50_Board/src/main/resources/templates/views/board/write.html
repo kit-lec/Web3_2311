@@ -17,17 +17,16 @@
 </head>
 
 <body style="margin-bottom: 200px">
-<div class="container mt-3">
-    <!--/* 인증 헤더 */-->
-    <th:block th:insert="~{common/header::header}"></th:block>
+<!--/* 인증 헤더 */-->
+<th:block th:insert="~{common/header::header}"></th:block>
 
+<div class="container mt-3" th:with="user=${#authentication.principal.user}">
     <h2>작성</h2>
     <hr>
     <form th:action="@{/board/write}" method="post">
         <div class="my-3">
-            <label for="user">작성자:</label>
-            <input type="text" class="form-control" id="user" placeholder="작성자를 입력하세요" name="user" th:value="${user}">
-            <span class="text-danger" th:if="${error_user}" th:utext="${error_user}"></span>
+            <label>작성자:</label>
+            <span class="form-control">[[${user.username}]]([[${user.name}]])</span>
         </div>
         <div><span class="text-danger"></span></div>
 

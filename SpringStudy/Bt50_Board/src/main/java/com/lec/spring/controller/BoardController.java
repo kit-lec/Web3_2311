@@ -3,6 +3,7 @@ package com.lec.spring.controller;
 import com.lec.spring.domain.Post;
 import com.lec.spring.domain.PostValidator;
 import com.lec.spring.service.BoardService;
+import com.lec.spring.util.U;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -121,6 +122,15 @@ public class BoardController {
         System.out.println("initBinder() 호출");
         binder.setValidator(new PostValidator());
     }
+
+    // 페이징
+    // pageRows 변경시 동작
+    @PostMapping("/pageRows")
+    public String pageRows(Integer page, Integer pageRows){
+        U.getSession().setAttribute("pageRows", pageRows);
+        return "redirect:/board/list?page=" + page;
+    }
+
 
 }
 

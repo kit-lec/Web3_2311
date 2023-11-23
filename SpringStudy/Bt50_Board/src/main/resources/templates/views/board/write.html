@@ -43,7 +43,7 @@
         </div>
 
         <button type="submit" class="btn btn-outline-dark">작성완료</button>
-        <a class="btn btn-outline-dark" th:href="@{/board/list}">목록</a>
+        <a class="btn btn-outline-dark" th:href="@{/board/list(page=${session.page})}">목록</a>
     </form>
 
 </div>

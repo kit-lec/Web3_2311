@@ -2,15 +2,17 @@ package com.lec.spring.service;
 
 import com.lec.spring.domain.Post;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 // Service layer
 // - Business logic, Transaction 담당
 // - Controller 와 Data 레이어의 분리
 public interface BoardService {
     // 글 작성
-    int write(Post post);
+    int write(Post post, Map<String, MultipartFile> files);
 
     // 특정 id 의 글 조회
     // 트랜잭션 처리

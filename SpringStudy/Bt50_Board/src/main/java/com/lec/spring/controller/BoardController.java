@@ -12,9 +12,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 // Controller layer
 //  request 처리 ~ response
@@ -30,6 +32,7 @@ public class BoardController {
 
     @PostMapping("/write")
     public String writeOk(
+            @RequestParam Map<String, MultipartFile> files,
             @Valid Post post
             , BindingResult result    // <- Validator 가 유효성 검사를 한 결과가 담긴 객체
             , Model model   // BindingResult 보다  Model 을 뒤에 선언
@@ -61,7 +64,7 @@ public class BoardController {
             return "redirect:/board/write";
         }
 
-        model.addAttribute("result", boardService.write(post));
+        model.addAttribute("result", boardService.write(post, files));
         return "board/writeOk";
     }
 

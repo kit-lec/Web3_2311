@@ -23,7 +23,7 @@
 <div class="container mt-3" th:with="user=${#authentication.principal.user}">
     <h2>작성</h2>
     <hr>
-    <form th:action="@{/board/write}" method="post">
+    <form th:action="@{/board/write}" method="post" enctype="multipart/form-data">
         <div class="my-3">
             <label>작성자:</label>
             <span class="form-control">[[${user.username}]]([[${user.name}]])</span>
@@ -41,6 +41,18 @@
             <label for="content">내용:</label>
             <textarea class="form-control" rows="5" id="content" placeholder="내용을 입력하세요" name="content" th:utext="${content}"></textarea>
         </div>
+
+        <!-- 첨부파일 -->
+        <div class="container mt-3 mb-3 border rounded">
+            <div class="mb-3 mt-3">
+                <label>첨부파일:</label>
+                <div id="files">
+
+                </div>
+                <button type="button" id="btnAdd" class="btn btn-secondary">추가</button>
+            </div>
+        </div>
+        <!-- 첨부파일 -->
 
         <button type="submit" class="btn btn-outline-dark">작성완료</button>
         <a class="btn btn-outline-dark" th:href="@{/board/list(page=${session.page})}">목록</a>

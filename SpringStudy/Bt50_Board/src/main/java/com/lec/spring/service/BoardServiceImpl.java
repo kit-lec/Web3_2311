@@ -17,7 +17,14 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 
@@ -121,8 +128,29 @@ public class BoardServiceImpl implements BoardService {
         // 저장할 파일명
         System.out.println("filename: " + fileName);
 
-        // TODO
-        // 해피 주말.
+        // java.io.* ..
+        // java.nio.* ...
+        Path copyOfLocation = Paths.get(new File(uploadDir, fileName).getAbsolutePath());
+        System.out.println(copyOfLocation);
+
+
+        try {
+            // inputStream을 가져와서
+            // copyOfLocation (저장위치)로 파일을 쓴다.
+            // copy의 옵션은 기존에 존재하면 REPLACE(대체한다), 오버라이딩 한다
+            Files.copy(
+                    multipartFile.getInputStream(),
+                    copyOfLocation,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        attachment = Attachment.builder()
+                .filename(fileName)  // 저장된 이름
+                .sourcename(sourceName)  // 원본 이름
+                .build();
 
         return attachment;
     }
@@ -133,7 +161,35 @@ public class BoardServiceImpl implements BoardService {
     public Post detail(Long id) {
         postRepository.incViewCnt(id);
         Post post = postRepository.findById(id);
+
+        if(post != null){
+            // 첨부파일(들) 정보 가져오기
+            List<Attachment> fileList = attachmentRepository.findByPost(post.getId());
+            setImage(fileList);  // 이미지 파일 여부 세팅
+            post.setFileList(fileList);
+        }
+
         return post;
+    }
+
+    // [이미지 파일 여부 세팅]
+    private void setImage(List<Attachment> fileList) {
+        // upload 디렉토리 물리적 경로\
+        String realPath = new File(uploadDir).getAbsolutePath();
+
+        for(Attachment attachment : fileList){
+            BufferedImage imgData = null;
+            File f = new File(realPath, attachment.getFilename());  // 저장된 첨부파일에 대한 File 객체
+
+            try {
+                imgData = ImageIO.read(f);
+            } catch (IOException e) {
+                System.out.println("파일존재안함: " + f.getAbsolutePath() + " [" + e.getMessage() + "]");
+            }
+
+            if(imgData != null) attachment.setImage(true);  // 이것은 '이미지' 파일이다! 세팅!
+        }
+
     }
 
     @Override

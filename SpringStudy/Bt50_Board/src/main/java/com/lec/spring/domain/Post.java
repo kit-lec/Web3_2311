@@ -1,11 +1,10 @@
 package com.lec.spring.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 // Model 객체 (domain)
 
@@ -32,4 +31,18 @@ public class Post {
     private Long viewCnt;
 
     private User user;   // 글 작성자 (FK)
+
+    // 첨부파일
+    @ToString.Exclude
+    @Builder.Default
+    private List<Attachment> fileList = new ArrayList<>();
 }
+
+
+
+
+
+
+
+
+

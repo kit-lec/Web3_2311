@@ -296,7 +296,21 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private void delFile(Attachment file) {
-        // TODO
+        String saveDirectory = new File(uploadDir).getAbsolutePath();
+
+        File f = new File(saveDirectory, file.getFilename());  // 물리적으로 저장된 파일들이 삭제 대상
+        System.out.println("삭제시도--> " + f.getAbsolutePath());
+
+        if(f.exists()){
+            if(f.delete()){
+                System.out.println("삭제 성공");
+            } else {
+                System.out.println("삭제 실패");
+            }
+        } else {
+            System.out.println("파일이 존재하지 않습니다");
+        }
+
     }
 
     @Override
@@ -305,6 +319,16 @@ public class BoardServiceImpl implements BoardService {
 
         Post post = postRepository.findById(id);  // 존재하는 데이터인지 읽어와보기
         if(post != null){
+
+            // 물리적으로 저장된 첨부파일(들) 삭제
+            List<Attachment> fileList = attachmentRepository.findByPost(id);
+            if(fileList != null && fileList.size() > 0){
+                for(Attachment file : fileList){
+                    delFile(file);
+                }
+            }
+
+            // 글삭제 (참조하는 첨부파일, 댓글 등도 같이 삭제 된다   ON DELETE CASCADE)
             result = postRepository.delete(post);
         }
 

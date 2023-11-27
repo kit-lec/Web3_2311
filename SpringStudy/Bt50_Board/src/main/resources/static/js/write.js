@@ -9,4 +9,10 @@ $(function(){
             </div>`);
         i++;
     });
+
+    // Summernode 추가
+    $('#content').summernote({
+        height: 300,
+    });
+
 });

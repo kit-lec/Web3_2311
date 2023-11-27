@@ -16,6 +16,11 @@ $(function(){
         deleteFiles(fileId);
         $(this).parent().remove();
     });
+
+    // Summernote 장착!
+    $("#content").summernote({
+        height: 300,
+    });
 });
 
 function deleteFiles(fileId){

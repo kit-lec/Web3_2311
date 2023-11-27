@@ -260,12 +260,43 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Post selectById(Long id) {
         Post post = postRepository.findById(id);
+
+        if(post != null){
+            // 첨부파일(들) 정보 가져오기
+            List<Attachment> fileList = attachmentRepository.findByPost(post.getId());
+            setImage(fileList);  // 이미지 파일 여부 세팅
+            post.setFileList(fileList);
+        }
+
         return post;
     }
 
     @Override
-    public int update(Post post) {
-        return postRepository.update(post);
+    public int update(Post post
+            , Map<String, MultipartFile> files   // 새로 추가된 첨부파일들
+            , Long[] delfile) {   // 삭제될 첨부파일들
+
+        int result = postRepository.update(post);
+
+        // 새로운 첨부파일 추가
+        addFiles(files, post.getId());
+
+        // 삭제할 첨부파일들은 삭제하기
+        if(delfile != null){
+            for(Long fileId : delfile){
+                Attachment file = attachmentRepository.findById(fileId);
+                if(file != null){
+                    delFile(file);   // 물리적으로 파일 삭제
+                    attachmentRepository.delete(file);   // DB 에서 삭제
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private void delFile(Attachment file) {
+        // TODO
     }
 
     @Override

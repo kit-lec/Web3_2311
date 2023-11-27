@@ -89,7 +89,9 @@ public class BoardController {
 
     @PostMapping("/update")
     public String updateOk(
-            @Valid Post post
+            @RequestParam Map<String, MultipartFile> files    // 새로 추가될 첨부파일들
+            , Long [] delfile         // 삭제될 파일들
+            , @Valid Post post
             , BindingResult result
             , Model model
             , RedirectAttributes redirectAttrs
@@ -109,7 +111,7 @@ public class BoardController {
         }
 
 
-        model.addAttribute("result", boardService.update(post));
+        model.addAttribute("result", boardService.update(post, files, delfile));
         return "board/updateOk";
     }
 

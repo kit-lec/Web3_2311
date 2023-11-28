@@ -51,6 +51,26 @@ SELECT * FROM t5_post ORDER BY id desc limit 15, 5;
 
 DELETE FROM t5_post WHERE id > 4;
 
+# -------------------------------------------------------
+# 댓글
+
+# 특정글 의 (댓글 + 사용자) 정보
+SELECT 
+	c.id "id", 
+	c.content "content", 
+	c.regdate "regdate",
+	u.id "user_id", 
+	u.username "user_username", 
+	u.password "user_password", 
+	u.name "user_name", 
+	u.email "user_email", 
+	u.regdate "user_regdate"
+FROM t5_comment c, t5_user u
+WHERE 
+	c.user_id = u.id 
+	AND c.post_id = 4
+ORDER BY c.id DESC
+;
 
 
 

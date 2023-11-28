@@ -19,6 +19,10 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 
+        <script th:inline="javascript">
+            // ↓ 댓글 작성시 필요
+            const logged_id = [[${logged_user.id}]];
+        </script>
         <script th:src="@{/js/detail.js}"></script>
 
 

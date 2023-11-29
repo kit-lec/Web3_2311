@@ -3,9 +3,9 @@ package com.lec.spring.controller6;
 import com.lec.spring.domain.User;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -319,6 +319,39 @@ public class RtController1 {
 
         return result;
     }
+
+    // exchange 사용
+    // exchange(String url, HttpMethod method, HttpEntity<?> requestEntity, Class<T> responseType, Object... uriVariables)
+    @RequestMapping("api/test22")
+    public ResponseEntity<String> apiTest22(){
+
+        // header 준비
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+        headers.add("user-secret", "xxxx");
+
+        // body 데이터 준비
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("x_auth", "james");
+        params.add("x_secret", "1234");
+
+        // 위의 header 와 body 를 담은 HttpEntity 생성
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(params, headers);
+
+        // exchange() 요청
+        ResponseEntity<String> result = new RestTemplate().exchange(
+                HTTPBIN_URL + "/{method}",   // url
+                HttpMethod.POST,   // request method
+                httpEntity,   // HttpEntity (body + header)
+                String.class,
+                "post"
+        );
+
+        return result;
+    }
+
+
+
 
 }
 

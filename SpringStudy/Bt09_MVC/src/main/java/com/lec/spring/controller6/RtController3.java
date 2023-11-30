@@ -1,11 +1,14 @@
 package com.lec.spring.controller6;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.lec.spring.domain.User;
+import com.lec.spring.domain.dto.ResultDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -250,10 +253,82 @@ public class RtController3 {
     public String mapTest7(){
         String url = "http://localhost:8080/server/4";
         var result = rt.getForObject(url, Data7.class);
-        // TODO
+
+        //result.getResult()
+
         return result.toString();
     }
 
+    @Data
+    static class Data7 extends Data3 {
+        List<User> result;
+
+        // 아래와 같이 해도 가능.
+//        @JsonProperty("result")
+//        User[] result2;
+
+        //List<Map<String, Object>> result;
+
+        //Map<String, Object> [] result;
+    }
+
+    //--------------------------------------------------------------
+    // API 서비스(들) 에서 response 되는 JSON 을 설계하면서
+    // 공통적인 property 들도 있지만
+    // 결과 데이터의 타입은 다른 경우가 있다.
+    // 이 경우 매핑할 java class 를 generic 타입으로 정의해볼수도 있다.
+
+    @RequestMapping("/mapTest8")
+    public String mapTest8(){
+        List<String> output = new ArrayList<>();
+
+        {
+            String url = "http://localhost:8080/server/5";
+            Data8<RGBColor> result = rt.getForObject(url, Data8.class);
+            output.add(result.toString());
+        }
+
+        {
+            String url = "http://localhost:8080/server/6";
+            Data8<User> result = rt.getForObject(url, Data8.class);
+            output.add(result.toString());
+        }
+
+        return output.stream()
+                .collect(Collectors.joining("<br>"));
+
+    }
+
+    @Data
+    static class Data8<T> extends Data3 {
+        T result;
+    }
+
+    @Data
+    static class RGBColor {
+        Integer red, blue, green;
+    }
+
+
+    //--------------------------------------------------------------
+    // json 을 매핑하고자 하는 Java Pojo 클래스 를 정의하기
+    // https://www.jsonschema2pojo.org/
+    // [4] 를 위 사이트에서 만들기 => ResultDTO 객체 생성
+    @RequestMapping("/mapTest9")
+    public String mapTest9(){
+        String url = "http://localhost:8080/server/4";
+        var resultDto = rt.getForObject(url, ResultDTO.class);
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(resultDto.getStatus() + "<br>");
+        sb.append(resultDto.getCode() + "<br>");
+        sb.append(resultDto.getResponseTime() + "<br>");
+
+        resultDto.getResult().forEach(e ->
+                sb.append(" - " + e + "<br>"));
+
+        return sb.toString();
+    }
 
 }
 

@@ -37,6 +37,14 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Bt17_JPA" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Bt17_JPA" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/Bt50_Board" />
         <option name="modules">
           <set>

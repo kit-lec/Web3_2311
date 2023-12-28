@@ -1,3 +1,4 @@
+USE mydb2309;
 SHOW TABLES;
 
 SELECT TABLE_NAME FROM information_schema.TABLES

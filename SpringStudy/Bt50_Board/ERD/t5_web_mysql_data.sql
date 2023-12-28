@@ -1,3 +1,5 @@
+USE mydb2309;
+
 -- 기존테이블 삭제
 DELETE FROM t5_attachment;
 ALTER TABLE t5_attachment AUTO_INCREMENT = 1;

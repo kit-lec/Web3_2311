@@ -1,12 +1,10 @@
 package com.lec.spring.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -26,6 +24,11 @@ public class User {
     private String email;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    // query method Empty 예제
+//    @OneToMany(fetch = FetchType.EAGER)  // User:Address = 1:N
+//    private List<Address> address;
+
 }
 
 

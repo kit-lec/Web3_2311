@@ -11,6 +11,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -240,7 +241,10 @@ class UserRepositoryTest {
 
     @Test
     void qryMethod001() {
-        //TODO
+        System.out.println(userRepository.findByName("dennis"));
+        // 리턴타입이 User 이면 에러다
+        // IncorrectResultSizeDataAccessException: query did not return a unique result: 2
+        System.out.println(userRepository.findByName("martin"));
     }
 
     // 쿼리 메소드의 naming
@@ -248,40 +252,44 @@ class UserRepositoryTest {
     //     find…By, read…By, get…By, query…By, search…By, stream…By
     @Test
     void qryMethod002() {
-        System.out.println("findByEmail : " + userRepository);
-        System.out.println("getByEmail : " + userRepository);
-        System.out.println("readByEmail : " + userRepository);
-        System.out.println("queryByEmail : " + userRepository);
-        System.out.println("searchByEmail : " + userRepository);
-        System.out.println("streamByEmail : " + userRepository);
-        System.out.println("findUserByEmail : " + userRepository);
+        String email = "martin@redknight.com";
+        System.out.println("findByEmail : " + userRepository.findByEmail(email));
+        System.out.println("getByEmail : " + userRepository.getByEmail(email));
+        System.out.println("readByEmail : " + userRepository.readByEmail(email));
+        System.out.println("queryByEmail : " + userRepository.queryByEmail(email));
+        System.out.println("searchByEmail : " + userRepository.searchByEmail(email));
+        System.out.println("streamByEmail : " + userRepository.streamByEmail(email));
+        System.out.println("findUserByEmail : " + userRepository.findUserByEmail(email));
     }
 
     @Test
     void qryMethod003() {
-        System.out.println("findSomethingByEmail : " + userRepository);
+        String email = "martin@redknight.com";
+        System.out.println("findSomethingByEmail : " + userRepository.findSomethingByEmail(email));
 
         System.out.println("findByByName : " + userRepository);
     }
 
     @Test
     void qryMethod005() {
-        System.out.println("findTop1ByName : " + userRepository);
-        System.out.println("findTop2ByName : " + userRepository);
-        System.out.println("findFirst1ByName : " + userRepository);
-        System.out.println("findFirst2ByName : " + userRepository);
+        String name = "martin";
+        System.out.println("findTop1ByName : " + userRepository.findTop1ByName(name));
+        System.out.println("findTop2ByName : " + userRepository.findTop2ByName(name));
+        System.out.println("findFirst1ByName : " + userRepository.findFirst1ByName(name));
+        System.out.println("findFirst2ByName : " + userRepository.findFirst2ByName(name));
     }
 
     @Test
     void qryMethod006() {
-        System.out.println("findLast1ByName : " + userRepository);
+        System.out.println("findLast1ByName : " + userRepository.findLast1ByName("martin"));
     }
 
     @Test
     void qryMethod007() {
-        System.out.println("findByEmailAndName : " + userRepository);
-        System.out.println("findByEmailAndName : " + userRepository);
-        System.out.println("findByEmailOrName : " + userRepository);
+        String email = "martin@redknight.com";
+        System.out.println("findByEmailAndName : " + userRepository.findByEmailAndName(email, "martin"));
+        System.out.println("findByEmailAndName : " + userRepository.findByEmailAndName(email, "dennis"));
+        System.out.println("findByEmailOrName : " + userRepository.findByEmailOrName(email, "dennis"));
     }
 
     // After, Before
@@ -289,24 +297,29 @@ class UserRepositoryTest {
     // 그러나, 꼭 '시간'만을 위해서 쓰이지는 않는다 .   '숫자', '문자열' 등에서도 쓰일수 있다.
     @Test
     void qryMethod008() {
-        System.out.println("findByCreatedAtAfter : " + userRepository);  // 어제 이후의 createdAt 값
-        System.out.println("findByIdAfter : " + userRepository);
-        System.out.println("findByNameBefore : " + userRepository);
+        System.out.println("findByCreatedAtAfter : "
+                + userRepository.findByCreatedAtAfter(LocalDateTime.now().minusDays(1L)));  // 어제 이후의 createdAt 값
+        System.out.println("findByIdAfter : " + userRepository.findByIdAfter(4L));
+        System.out.println("findByNameBefore : " + userRepository.findByNameBefore("martin"));
     }
 
     // GreaterThan, GreaterThanEqual, LessThan, LessThanEqual
     @Test
     void qryMethod009() {
-        System.out.println("findByCreatedAtGreaterThan : " + userRepository);
-        System.out.println("findByNameGreaterThanEqual : " + userRepository);
+        System.out.println("findByCreatedAtGreaterThan : "
+                + userRepository.findByCreatedAtGreaterThan(LocalDateTime.now().minusDays(1L)));
+        System.out.println("findByNameGreaterThanEqual : "
+                + userRepository.findByNameGreaterThanEqual("martin"));
     }
 
     // Between
     @Test
     void qryMethod010() {
-        System.out.println("findByCreatedAtBetween : " + userRepository);
-        System.out.println("findByIdBetween : " + userRepository);
-        System.out.println("findByIdGreaterThanEqualAndIdLessThanEqual : " + userRepository);
+        System.out.println("findByCreatedAtBetween : "
+                + userRepository.findByCreatedAtBetween(LocalDateTime.now().minusDays(1L), LocalDateTime.now().plusDays(1L)));
+        System.out.println("findByIdBetween : " + userRepository.findByIdBetween(1L, 3L));
+        System.out.println("findByIdGreaterThanEqualAndIdLessThanEqual : "
+                + userRepository.findByIdGreaterThanEqualAndIdLessThanEqual(1L, 3L));
     }
 
     // Empty 와 Null
@@ -316,31 +329,35 @@ class UserRepositoryTest {
     //   - Null, IsNull
     @Test
     void qryMethod011() {
-        System.out.println("findByIdIsNotNull : " + userRepository);
+        System.out.println("findByIdIsNotNull : " + userRepository.findByIdIsNotNull());
 
-//      System.out.println("findByAddressIsNotEmpty : " + userRepository);
+//        System.out.println("findByIdIsNotEmpty : " + userRepository.findByIdIsNotEmpty());
+
+//      System.out.println("findByAddressIsNotEmpty : "
+//              + userRepository.findByAddressIsNotEmpty());
     }
 
     // In, NotIn
     @Test
     void qryMethod012() {
-        System.out.println("findByNameIn : " + userRepository);
+        System.out.println("findByNameIn : "
+                + userRepository.findByNameIn(List.of("martin", "dennis")));
     }
 
     // StartingWith, EndingWith, Contains
     // 문자열에 대한 검색쿼리, LIKE 사용
     @Test
     void qryMethod013() {
-        System.out.println("findByNameStartingWith : " + userRepository);
-        System.out.println("findByNameEndingWith : " + userRepository);
-        System.out.println("findByEmailContains : " + userRepository);
+        System.out.println("findByNameStartingWith : " + userRepository.findByNameStartingWith("mar"));
+        System.out.println("findByNameEndingWith : " + userRepository.findByNameEndingWith("s"));
+        System.out.println("findByEmailContains : " + userRepository.findByEmailContains("red"));
     }
 
     // Like
     // 사실 위의 키워드는 Like 를 한번 더 wrapping 한거다.
     @Test
     void qryMethod014() {
-        System.out.println("findByEmailLike : " + userRepository);
+        System.out.println("findByEmailLike : " + userRepository.findByEmailLike("%" + "dragon" + "%"));
     }
 
     // Is, Equals

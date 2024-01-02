@@ -1,5 +1,6 @@
 package com.lec.spring.repository;
 
+import com.lec.spring.domain.Gender;
 import com.lec.spring.domain.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,9 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -375,17 +374,17 @@ class UserRepositoryTest {
     // Query method 에 OrderBy 를 붙임
     @Test
     void qryMethod016() {
-        System.out.println("findTop1ByName : " + userRepository);
-        System.out.println("findLast1ByName : " + userRepository);
+        System.out.println("findTop1ByName : " + userRepository.findTop1ByName("martin"));
+        System.out.println("findLast1ByName : " + userRepository.findLast1ByName("martin"));
 
-        System.out.println("findTopByNameOrderByIdDesc : " + userRepository);
+        System.out.println("findTopByNameOrderByIdDesc : " + userRepository.findTopByNameOrderByIdDesc("martin"));
     }
 
     // 정렬기준 추가
     @Test
     void qryMethod017() {
-        System.out.println("findFirstByNameOrderByIdDesc : " + userRepository);
-        System.out.println("findFirstByNameOrderByIdDescEmailDesc : " + userRepository);
+        System.out.println("findFirstByNameOrderByIdDesc : " + userRepository.findFirstByNameOrderByIdDesc("martin"));
+        System.out.println("findFirstByNameOrderByIdDescEmailDesc : " + userRepository.findFirstByNameOrderByIdDescEmailDesc("martin"));
     }
 
     // 매개변수(Sort) 기반 정렬
@@ -393,41 +392,124 @@ class UserRepositoryTest {
     @Test
     void qryMethod018() {
         System.out.println("findFirstByName + Sort : "
-                + userRepository);
+                + userRepository.findFirstByName("martin", Sort.by(Sort.Order.desc("id"))));
         System.out.println("findFirstByName + Sort : "
-                + userRepository);
-        System.out.println("findFirstByName + Sort : "
-                + userRepository);
+                + userRepository.findFirstByName("martin", Sort.by(Sort.Order.desc("id"), Sort.Order.asc("email"))));
+//        System.out.println("findFirstByName + Sort : "
+//                + userRepository);
     }
 
     @Test
     void qryMethod018_2() {
         System.out.println("findFirstByName + Sort : "
-                + userRepository);
+                + userRepository.findFirstByName("martin", Sort.by(Sort.Order.desc("id"), Sort.Order.asc("email"))));
         System.out.println("findFirstByName + Sort : "
-                + userRepository);
+                + userRepository.findFirstByName("martin", Sort.by(Sort.Order.desc("id"), Sort.Order.desc("email"))));
         System.out.println("findFirstByName + Sort : "
-                + userRepository);
+                + userRepository.findFirstByName("martin", Sort.by(Sort.Order.desc("id"), Sort.Order.asc("name"))));
         System.out.println("findFirstByName + Sort : "
-                + userRepository);
+                + userRepository.findFirstByName("martin", Sort.by(Sort.Order.desc("id"), Sort.Order.desc("name"))));
     }
 
+    // 코드 가독성 개선
+    // Sort.by 의 가독성이 떨어지면 아예 메소드를 따로 만들어 제공 가능.
     @Test
     void qryMethod018_3() {
         System.out.println("findFirstByName + Sort : "
-                + userRepository);
+                + userRepository.findFirstByName("martin", getSort()));
     }
 
-    // TODO
+    private Sort getSort(){
+        return Sort.by(
+                Sort.Order.desc("id"),
+                Sort.Order.asc("email").ignoreCase(),   // 대소문자 구분안함
+                Sort.Order.desc("createdAt"),
+                Sort.Order.asc("updatedAt")
+        );
+    }
 
     // 19 Paging + Sort
     // PageRequest.of(page, size, Sort) page는 0-base
     // PageRequest 는 Pageable의 구현체
     @Test
     void qryMethod019() {
-        // TODO
+        Page<User> users = userRepository.findByName("martin", PageRequest.of(1, 2, Sort.by(Sort.Order.desc("id"))));
+
+        System.out.println("page: " + users);
+        System.out.println("totalElements: " + users.getTotalElements());
+        System.out.println("totalPages: " + users.getTotalPages());
+        System.out.println("numberOfElements: " + users.getNumberOfElements());
+        System.out.println("sort: " + users.getSort());
+        System.out.println("size: " + users.getSize());
+        users.getContent().forEach(System.out::println);
     }
 
+    @Test
+    void insertAndUpdateTest(){
+        user = new User();
+        user.setName("martin");
+        user.setEmail("martin2@blueknight.com");
 
+        userRepository.save(user);  // INSERT
+
+        user2 = userRepository.findById(1L).orElseThrow(RuntimeException::new);
+        user2.setName("marrrrrrrrrrtin");
+
+        userRepository.save(user2);  // UPDATE
+    }
+
+    @Test
+    void enumTest(){
+        user = userRepository.findById(1L).orElseThrow(RuntimeException::new);
+        user.setGender(Gender.MALE);
+        userRepository.save(user);  // UPDATE
+        userRepository.findAll().forEach(System.out::println);
+
+        // enum 타입이 실제 어떤 값으로 DB 에 저장되었는지 확인
+        System.out.println(userRepository.findRowRecord().get("gender"));
+    }
+
+    @Test
+    void listenerTest(){
+        user = new User();
+        user.setEmail("martin2@reddragon.com");
+        user.setName("martin2");
+
+        userRepository.save(user);  // INSERT
+
+        // SELECT
+        user2 = userRepository.findById(1L).orElseThrow(RuntimeException::new);  // SELECT
+        user2.setName("marrrrrrtin");
+        userRepository.save(user2);  // SELECT, UPDATE
+
+        userRepository.deleteById(4L);   // SELECT, DELETE
+
+
+    }
+
+    @Test
+    void prePersistTest(){
+        user = new User();
+        user.setEmail("martin2@redknight.com");
+        user.setName("martin2");
+//        user.setCreatedAt(LocalDateTime.now());
+//        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);  // INSERT
+        System.out.println(userRepository.findByEmail("martin2@redknight.com"));  // SELECT
+    }
+
+    @Test
+    void preUpdateTest() throws InterruptedException {
+
+        Thread.sleep(1000);
+
+        User user = userRepository.findById(1L).orElseThrow(RuntimeException::new);
+        System.out.println("as-is : " + user);   // 수정전
+        user.setName("martin2");
+
+        userRepository.save(user);  // UPDATE
+        System.out.println("to-be : " + userRepository.findAll().get(0));
+
+    }
 
 } // end Test

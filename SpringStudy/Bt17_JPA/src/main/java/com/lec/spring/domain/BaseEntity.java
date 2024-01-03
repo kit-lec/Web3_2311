@@ -1,5 +1,6 @@
 package com.lec.spring.domain;
 
+import com.lec.spring.listener.Auditable;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @MappedSuperclass // 이 클래스의 속성을 상속받는 쪽에 '포함' 시켜줌.
 @EntityListeners(value = AuditingEntityListener.class)
-public class BaseEntity {
+public class BaseEntity implements Auditable {
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate

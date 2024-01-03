@@ -19,13 +19,18 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 //@EntityListeners(value = AuditingEntityListener.class)
-public class Book extends BaseEntity implements Auditable {
+public class Book extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-    private String author;
+
+    private String category;
+
+    private Long authorId;
+
+    private Long publisherId;
 
 //    @Column(updatable = false)
 //    @CreatedDate

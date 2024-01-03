@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
         , uniqueConstraints = {@UniqueConstraint(columnNames = {"email", "name"})}
 )
 @EntityListeners(value = {UserEntityListener.class})
-public class User extends BaseEntity implements Auditable {
+public class User extends BaseEntity {
 
     @Id  // PK
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // AI

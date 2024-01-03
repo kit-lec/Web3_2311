@@ -2,7 +2,6 @@ package com.lec.spring.domain;
 
 import com.lec.spring.listener.Auditable;
 import jakarta.persistence.*;
-import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,31 +18,21 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 //@EntityListeners(value = AuditingEntityListener.class)
-public class Book extends BaseEntity implements Auditable {
+public class UserHistory extends BaseEntity implements Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private String author;
+    private Long userId;  // User 의 id
+    private String name;   // User 의  name
+    private String email;  // User 의 email
 
 //    @Column(updatable = false)
 //    @CreatedDate
 //    private LocalDateTime createdAt;
 //    @LastModifiedDate
 //    private LocalDateTime updatedAt;
-
-//    @PrePersist
-//    public void prePersist(){
-//        this.createdAt = LocalDateTime.now();
-//        this.updatedAt = LocalDateTime.now();
-//    }
-//
-//    @PreUpdate
-//    public void preUpdate(){
-//        this.updatedAt = LocalDateTime.now();
-//    }
-}
+} // end Entity
 
 
 

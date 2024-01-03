@@ -512,4 +512,32 @@ class UserRepositoryTest {
 
     }
 
+    //--------------------------------------------
+    @Autowired
+    private UserHistoryRepository userHistoryRepository;
+
+    @Test
+    void userHistoryTest(){
+        user = new User();
+        user.setEmail("martin-new@greendragon.com");
+        user.setName("다람쥐");
+
+        userRepository.save(user);  // INSERT
+
+        user.setName("고양이");
+        userRepository.save(user);  // UPDATE
+        userHistoryRepository.findAll().forEach(System.out::println);
+    }
+
 } // end Test
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-package com.lec.spring.domain;
+package com.lec.spring.listener;
 
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;

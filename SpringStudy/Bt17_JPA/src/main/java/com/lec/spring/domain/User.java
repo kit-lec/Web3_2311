@@ -1,24 +1,31 @@
 package com.lec.spring.domain;
 
+import com.lec.spring.listener.Auditable;
+import com.lec.spring.listener.UserEntityListener;
 import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
+@ToString(callSuper = true)  // 부모까지 toString 출력
+@EqualsAndHashCode(callSuper = true)
 @Entity
 // ↑ 이 객체가 JPA 에서 관리하는 Entity 객체임을 알림.
 @Table(name = "T_USER"   // db 테이블 명
         , indexes = {@Index(columnList = "name")}
         , uniqueConstraints = {@UniqueConstraint(columnNames = {"email", "name"})}
 )
-@EntityListeners(value = MyEntityListener.class)
-public class User implements Auditable{
+@EntityListeners(value = {UserEntityListener.class})
+public class User extends BaseEntity implements Auditable {
 
     @Id  // PK
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // AI
@@ -32,9 +39,11 @@ public class User implements Auditable{
 
     //@Column(nullable = false)   // true 가 디폴트
     //@Column(updatable = false)
-    private LocalDateTime createdAt;
-    //@Column(insertable = false)
-    private LocalDateTime updatedAt;
+//    @Column(updatable = false)
+//    @CreatedDate
+//    private LocalDateTime createdAt;
+//    @LastModifiedDate
+//    private LocalDateTime updatedAt;
 
     // query method Empty 예제
 //    @OneToMany(fetch = FetchType.EAGER)  // User:Address = 1:N

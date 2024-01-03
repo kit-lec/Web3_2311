@@ -2,6 +2,7 @@ package com.lec.spring.repository;
 
 import com.lec.spring.domain.Gender;
 import com.lec.spring.domain.User;
+import com.lec.spring.domain.UserHistory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -527,6 +528,31 @@ class UserRepositoryTest {
         user.setName("고양이");
         userRepository.save(user);  // UPDATE
         userHistoryRepository.findAll().forEach(System.out::println);
+    }
+
+    @Test
+    void userRelationTest(){
+        user = new User();
+        user.setName("David");
+        user.setEmail("david@reddragon.com");
+        user.setGender(Gender.MALE);
+
+        userRepository.save(user); // User에 INSERT, UserHistory에도 추가
+
+        user.setName("daniel");
+        userRepository.save(user);  // User에 UPDATE, UserHistory에도 추가
+
+        user.setEmail("daniel@bluedragon.com");
+        userRepository.save(user);   // User에 UPDATE, UserHistory에도 추가
+
+        //userHistoryRepository.findAll().forEach(System.out::println);
+
+        // userId 로 UserHistory 조회
+        List<UserHistory> result =
+            userHistoryRepository.findByUserId(userRepository.findByEmail("daniel@bluedragon.com").getId());
+
+        result.forEach(System.out::println);
+
     }
 
 } // end Test

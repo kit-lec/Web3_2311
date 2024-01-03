@@ -21,7 +21,8 @@ public class BookReviewInfo extends BaseEntity {
     // BookReviewInfo : Book
     // private Long bookId;
 
-    @OneToOne  // Book 과 1:1 매핑
+    @OneToOne(optional = false)  // Book 과 1:1 매핑
+             // optional = false  <-  Book 값은 null 을 허용하지 않는다 (즉, 반드시 Book 을 참조)
     private Book book;  // 부모 Entity 를 직접 참조한다.
                         // 기본적으로 Entity 에선 직접적으로 다른 Entity 를 직접 참조 못한다
                         // @OneToOne 과 같은 relation 어노테이션을 지정해주어야 한다.

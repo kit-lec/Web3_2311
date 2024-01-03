@@ -84,19 +84,42 @@ class BookReviewInfoRepositoryTest {
         book.setAuthorId(1L);
         book.setPublisherId(1L);
 
-        // save() 의 리턴값은 Entity 다.
+        // save() 의 리턴값은 영속화된 Entity 다.
         return bookRepository.save(book); // Book 에 INSERT
     }
 
     private void givenBookReviewInfo(){
         BookReviewInfo bookReviewInfo = new BookReviewInfo();
-        // TODO
+        bookReviewInfo.setBook(givenBook());  // ★setBook (영속화된 Entity)★
+        bookReviewInfo.setAverageReviewScore(4.5f);
+        bookReviewInfo.setReviewCnt(2);
+
+        bookReviewInfoRepository.save(bookReviewInfo);  // INSERT
+
+        System.out.println(">>> " + bookReviewInfoRepository.findAll());
     }
 
 
     @Test
     void crudTest3(){
+        givenBookReviewInfo();
 
+        // BookReviewInfo 에서 Book 정보 가져오기
+        // 자식 -> 부모 정보 조회하기
+        var result = bookReviewInfoRepository
+                .findById(1L).orElseThrow(RuntimeException::new)  // BookReviewInfo(id=1L)
+                //.getBook()     // 1:1 연결된(참조하는) 부모 Book Entity 를 가져온다.
+                ;
+
+        System.out.println(">>> " + result);
+
+        // Book 에서 BookReviewInfo 정보 조회
+        // 부모 -> 자식
+        var result2 = bookRepository.findById(1L).orElseThrow(RuntimeException::new)
+                //.getBookReviewInfo()
+                ;
+
+        System.out.println(">>> " + result2);
     }
 
 }

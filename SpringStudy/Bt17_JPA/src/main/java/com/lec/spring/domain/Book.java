@@ -32,6 +32,10 @@ public class Book extends BaseEntity {
 
     private Long publisherId;
 
+    @OneToOne(mappedBy = "book")  // 해당 Entity 의 테이블에선 연관키를 가지지 않는다.
+    @ToString.Exclude  // 양방향 에서 순환참조 때문에
+    private BookReviewInfo bookReviewInfo;
+
 //    @Column(updatable = false)
 //    @CreatedDate
 //    private LocalDateTime createdAt;

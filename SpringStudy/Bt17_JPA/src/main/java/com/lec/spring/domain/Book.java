@@ -48,12 +48,21 @@ public class Book extends BaseEntity {
     @ToString.Exclude
     private Publisher publisher;
 
-    @ManyToMany
-    @ToString.Exclude
-    private List<Author> authors = new ArrayList<>();
+//    @ManyToMany
+//    @ToString.Exclude
+//    private List<Author> authors = new ArrayList<>();
+//
+//    public void addAuthor(Author... authors){
+//        Collections.addAll(this.authors, authors);
+//    }
 
-    public void addAuthor(Author... authors){
-        Collections.addAll(this.authors, authors);
+    @OneToMany
+    @JoinColumn(name = "book_id")
+    @ToString.Exclude
+    private List<Writing> writings = new ArrayList<>();
+
+    public void addWriting(Writing... writings){
+        Collections.addAll(this.writings, writings);
     }
 
 //    @Column(updatable = false)

@@ -12,6 +12,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -30,11 +33,28 @@ public class Book extends BaseEntity {
 
     private Long authorId;
 
-    private Long publisherId;
+//    private Long publisherId;
 
     @OneToOne(mappedBy = "book")  // 해당 Entity 의 테이블에선 연관키를 가지지 않는다.
     @ToString.Exclude  // 양방향 에서 순환참조 때문에
     private BookReviewInfo bookReviewInfo;
+
+    @OneToMany
+    @JoinColumn(name = "book_id")
+    @ToString.Exclude
+    private List<Review> reviews = new ArrayList<>();
+
+    @ManyToOne
+    @ToString.Exclude
+    private Publisher publisher;
+
+    @ManyToMany
+    @ToString.Exclude
+    private List<Author> authors = new ArrayList<>();
+
+    public void addAuthor(Author... authors){
+        Collections.addAll(this.authors, authors);
+    }
 
 //    @Column(updatable = false)
 //    @CreatedDate

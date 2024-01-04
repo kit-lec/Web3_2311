@@ -545,13 +545,18 @@ class UserRepositoryTest {
         user.setEmail("daniel@bluedragon.com");
         userRepository.save(user);   // User에 UPDATE, UserHistory에도 추가
 
-        //userHistoryRepository.findAll().forEach(System.out::println);
+        userHistoryRepository.findAll().forEach(System.out::println);
 
         // userId 로 UserHistory 조회
+//        List<UserHistory> result =
+//            userHistoryRepository.findByUserId(userRepository.findByEmail("daniel@bluedragon.com").getId());
+
         List<UserHistory> result =
-            userHistoryRepository.findByUserId(userRepository.findByEmail("daniel@bluedragon.com").getId());
+                userRepository.findByEmail("daniel@bluedragon.com").getUserHistories();
 
         result.forEach(System.out::println);
+
+        System.out.println("UserHistory.getUser() : " + userHistoryRepository.findAll().get(0).getUser());
 
     }
 

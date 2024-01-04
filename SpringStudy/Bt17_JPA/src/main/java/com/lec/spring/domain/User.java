@@ -10,6 +10,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -37,6 +39,21 @@ public class User extends BaseEntity {
     @Column(unique = true)
     private String email;
 
+    @Enumerated(value = EnumType.STRING)
+    private Gender gender;
+
+    // User:UserHistory = 1:N
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)   // Entity 가 어떤 컬럼으로 join 하게 될지 지정해준다.
+    @ToString.Exclude
+    private List<UserHistory> userHistories = new ArrayList<>();  // NPE 방지
+
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    @ToString.Exclude
+    private List<Review> reviews = new ArrayList<>();
+
+
     //@Column(nullable = false)   // true 가 디폴트
     //@Column(updatable = false)
 //    @Column(updatable = false)
@@ -52,8 +69,7 @@ public class User extends BaseEntity {
 //    @Transient  // jakarta.persistence : DB 에 반영안하는 필드
 //    private String testData;
 
-    @Enumerated(value = EnumType.STRING)
-    private Gender gender;
+
 
 
 //    @PrePersist

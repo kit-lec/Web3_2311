@@ -1,9 +1,14 @@
 package com.lec.spring.domain;
 
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 // Model 객체 (domain)
@@ -23,19 +28,41 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Post {
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+@Entity(name = "t7_post")
+@DynamicInsert   // insert 시 null 인 필드 제외
+@DynamicUpdate  // update 시 null 인 필드 제외
+public class Post extends BaseEntity{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String subject;
-    private String content;
-    private LocalDateTime regDate;
-    private Long viewCnt;
 
+    @Column(nullable = false)
+    private String subject;
+    @Column(columnDefinition = "LONGTEXT")
+    private String content;
+    @ColumnDefault(value = "0")
+    private long viewCnt;
+
+    // Post:User = N:1
+    @ManyToOne(optional = false)
+            // optional = false : user_id bigint not null
+            //  이게 없으면 Post 의 find..동작시  Post 와 User 사이에 left outer join 발생
+    @ToString.Exclude
     private User user;   // 글 작성자 (FK)
 
     // 첨부파일
+    // Post:File = 1:N
+    @OneToMany(cascade = CascadeType.ALL) // cascade = CascadeType.ALL : 삭제등의 동작 발생시 child 도 함께 삭제
+    @JoinColumn(name = "post_id")   // 중간테이블 없애고 post_id 로 join 수행
     @ToString.Exclude
     @Builder.Default
     private List<Attachment> fileList = new ArrayList<>();
+
+    public void addFiles(Attachment... files) {
+        Collections.addAll(fileList, files);
+    }
 }
 
 

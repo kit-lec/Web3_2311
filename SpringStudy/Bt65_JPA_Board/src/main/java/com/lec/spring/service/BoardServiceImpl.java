@@ -8,9 +8,11 @@ import com.lec.spring.repository.PostRepository;
 import com.lec.spring.repository.UserRepository;
 import com.lec.spring.util.U;
 import jakarta.servlet.http.HttpSession;
-import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -39,17 +41,12 @@ public class BoardServiceImpl implements BoardService {
     @Value("${app.upload.path}")
     private String uploadDir;
 
-    private PostRepository postRepository;
-    private UserRepository userRepository;
-    private AttachmentRepository attachmentRepository;
-
     @Autowired
-    public BoardServiceImpl(SqlSession sqlSession){  // MyBatis 가 생성한 SqlSession 빈(bean) 객체 주입
-        postRepository = sqlSession.getMapper(PostRepository.class);
-        userRepository = sqlSession.getMapper(UserRepository.class);
-        attachmentRepository = sqlSession.getMapper(AttachmentRepository.class);
-        System.out.println("BoardService() 생성");
-    }
+    private PostRepository postRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private AttachmentRepository attachmentRepository;
 
     @Override
     public int write(Post post, Map<String, MultipartFile> files) {
@@ -57,15 +54,15 @@ public class BoardServiceImpl implements BoardService {
         User user = U.getLoggedUser();
 
         // 위 정보는 session 의 정보이고, 일단 DB 에서 다시 읽어온다.
-        user = userRepository.findById(user.getId());
+        user = userRepository.findById(user.getId()).orElse(null);
         post.setUser(user);    // 글 작성자 세팅
 
-        int cnt = postRepository.save(post);
+        post = postRepository.saveAndFlush(post);  // INSERT
         
         // 첨부파일 추가
         addFiles(files, post.getId());
 
-        return cnt;
+        return 1;
     }
 
     // 특정 글 (id) 의 첨부파일(들) 추가
@@ -86,7 +83,7 @@ public class BoardServiceImpl implements BoardService {
 
             // 성공하면 db 에도 저장
             if(file != null){
-                file.setPost_id(id);   // FK 설정
+                file.setPost(id);   // FK 설정
                 attachmentRepository.save(file);   //  INSERT
             }
 
@@ -159,10 +156,14 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional   // 이 메소드를 트랜잭션으로 처리
     public Post detail(Long id) {
-        postRepository.incViewCnt(id);
-        Post post = postRepository.findById(id);
+
+        Post post = postRepository.findById(id).orElse(null);
 
         if(post != null){
+            // 조회수 증가
+            post.setViewCnt(post.getViewCnt() + 1);
+            postRepository.saveAndFlush(post);  // UPDATE
+
             // 첨부파일(들) 정보 가져오기
             List<Attachment> fileList = attachmentRepository.findByPost(post.getId());
             setImage(fileList);  // 이미지 파일 여부 세팅
@@ -214,8 +215,10 @@ public class BoardServiceImpl implements BoardService {
         if(pageRows == null) pageRows = PAGE_ROWS; // 만약 session 에 없으면 기본값으로 동작
         session.setAttribute("page", page);  // 현재 페이지 번호 -> session 에 저장
 
-        long cnt = postRepository.countAll();   // 글 목록 전체의 개수
-        int totalPage = (int)Math.ceil(cnt / (double)pageRows);  // 총 몇 '페이지' 분량인가?
+        Page<Post> pagePost = postRepository.findAll(PageRequest.of(page - 1, pageRows, Sort.by(Sort.Order.desc("id"))));
+
+        long cnt = pagePost.getTotalElements();   // 글 목록 전체의 개수
+        int totalPage = pagePost.getTotalPages();  // 총 몇 '페이지' 분량인가?
 
         // [페이징] 에 표시할 '시작페이지' 와 '마지막 페이지'
         int startPage = 0;
@@ -237,7 +240,7 @@ public class BoardServiceImpl implements BoardService {
             if (endPage >= totalPage) endPage = totalPage;
 
             // 해당 페이지의 글 목록 읽어오기
-            list = postRepository.selectFromRow(fromRow, pageRows);
+            list = pagePost.getContent();
             model.addAttribute("list", list);
         } else {
             page = 0;
@@ -259,7 +262,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Post selectById(Long id) {
-        Post post = postRepository.findById(id);
+        Post post = postRepository.findById(id).orElse(null);
 
         if(post != null){
             // 첨부파일(들) 정보 가져오기
@@ -276,20 +279,29 @@ public class BoardServiceImpl implements BoardService {
             , Map<String, MultipartFile> files   // 새로 추가된 첨부파일들
             , Long[] delfile) {   // 삭제될 첨부파일들
 
-        int result = postRepository.update(post);
+        // update 하고자 하는 데이터를 일단 읽어와야 한다.
+        Post p = postRepository.findById(post.getId()).orElse(null);
+        int result = 0;
 
-        // 새로운 첨부파일 추가
-        addFiles(files, post.getId());
+        if(p != null){
+            p.setSubject(post.getSubject());
+            p.setContent(post.getContent());
+            p = postRepository.saveAndFlush(p); // UPDATE
 
-        // 삭제할 첨부파일들은 삭제하기
-        if(delfile != null){
-            for(Long fileId : delfile){
-                Attachment file = attachmentRepository.findById(fileId);
-                if(file != null){
-                    delFile(file);   // 물리적으로 파일 삭제
-                    attachmentRepository.delete(file);   // DB 에서 삭제
+            // 새로운 첨부파일 추가
+            addFiles(files, post.getId());
+
+            // 삭제할 첨부파일들은 삭제하기
+            if(delfile != null){
+                for(Long fileId : delfile){
+                    Attachment file = attachmentRepository.findById(fileId).orElse(null);
+                    if(file != null){
+                        delFile(file);   // 물리적으로 파일 삭제
+                        attachmentRepository.delete(file);   // DB 에서 삭제
+                    }
                 }
             }
+            result = 1;
         }
 
         return result;
@@ -317,7 +329,7 @@ public class BoardServiceImpl implements BoardService {
     public int deleteById(Long id) {
         int result = 0;
 
-        Post post = postRepository.findById(id);  // 존재하는 데이터인지 읽어와보기
+        Post post = postRepository.findById(id).orElse(null);  // 존재하는 데이터인지 읽어와보기
         if(post != null){
 
             // 물리적으로 저장된 첨부파일(들) 삭제
@@ -329,7 +341,8 @@ public class BoardServiceImpl implements BoardService {
             }
 
             // 글삭제 (참조하는 첨부파일, 댓글 등도 같이 삭제 된다   ON DELETE CASCADE)
-            result = postRepository.delete(post);
+            postRepository.delete(post);
+            result = 1;
         }
 
         return result;

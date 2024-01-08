@@ -1,13 +1,11 @@
 package com.lec.spring;
 
-import com.lec.spring.domain.Attachment;
-import com.lec.spring.domain.Authority;
-import com.lec.spring.domain.Post;
-import com.lec.spring.domain.User;
+import com.lec.spring.domain.*;
 import com.lec.spring.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -24,8 +22,10 @@ class JpaBoardTest {
     private PostRepository postRepository;
     @Autowired
     private AttachmentRepository attachmentRepository;
-//    @Autowired
+    @Autowired
     private CommentRepository commentRepository;
+
+
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -176,6 +176,116 @@ class JpaBoardTest {
             // Eager Fetch 를 사용하지 않는다면 이렇게 하자
             var result = attachmentRepository.findByPost(1L);
             System.out.println(postId + "번 글의 첨부파일들: " + result.size() + "개");
+            System.out.println(result);
+        }
+
+
+        // 댓글 생성
+        System.out.println("\n댓글 생성 " + "-".repeat(30));
+        Comment c1 = Comment.builder()
+                .content("1. user1이 1번글에 댓글 작성.")
+                .user(user1)   // FK
+                .post(p1.getId())  // FK
+                .build();
+
+
+        Comment c2 = Comment.builder()
+                .content("2. user1이 1번글에 댓글 작성.")
+                .user(user1)
+                .post(p1.getId())
+                .build();
+        Comment c3 = Comment.builder()
+                .content("3. user1이 2번글에 댓글 작성.")
+                .user(user1)
+                .post(p2.getId())
+                .build();
+        Comment c4 = Comment.builder()
+                .content("4. user1이 2번글에 댓글 작성.")
+                .user(user1)
+                .post(p2.getId())
+                .build();
+        Comment c5 = Comment.builder()
+                .content("5. user1이 3번글에 댓글 작성.")
+                .user(user1)
+                .post(p3.getId())
+                .build();
+        Comment c6 = Comment.builder()
+                .content("6. user1이 3번글에 댓글 작성.")
+                .user(user1)
+                .post(p3.getId())
+                .build();
+        Comment c7 = Comment.builder()
+                .content("7. user1이 4번글에 댓글 작성.")
+                .user(user1)
+                .post(p4.getId())
+                .build();
+        Comment c8 = Comment.builder()
+                .content("8. user1이 4번글에 댓글 작성.")
+                .user(user1)
+                .post(p4.getId())
+                .build();
+        Comment c9 = Comment.builder()
+                .content("9. admin1이 1번글에 댓글 작성.")
+                .user(admin1)
+                .post(p1.getId())
+                .build();
+        Comment c10 = Comment.builder()
+                .content("10. admin1이 1번글에 댓글 작성.")
+                .user(admin1)
+                .post(p1.getId())
+                .build();
+        Comment c11 = Comment.builder()
+                .content("11. admin1이 2번글에 댓글 작성.")
+                .user(admin1)
+                .post(p2.getId())
+                .build();
+        Comment c12 = Comment.builder()
+                .content("12. admin1이 2번글에 댓글 작성.")
+                .user(admin1)
+                .post(p2.getId())
+                .build();
+        Comment c13 = Comment.builder()
+                .content("13. admin1이 3번글에 댓글 작성.")
+                .user(admin1)
+                .post(p3.getId())
+                .build();
+        Comment c14 = Comment.builder()
+                .content("14. admin1이 3번글에 댓글 작성.")
+                .user(admin1)
+                .post(p3.getId())
+                .build();
+        Comment c15 = Comment.builder()
+                .content("15. admin1이 4번글에 댓글 작성.")
+                .user(admin1)
+                .post(p4.getId())
+                .build();
+        Comment c16 = Comment.builder()
+                .content("16. admin1이 4번글에 댓글 작성.")
+                .user(admin1)
+                .post(p4.getId())
+                .build();
+
+        commentRepository.saveAll(List.of(
+                c1, c2, c3, c4,
+                c5, c6, c7, c8,
+                c9, c10, c11, c12,
+                c13, c14, c15, c16
+        ));
+
+        commentRepository.findAll().forEach(System.out::println);
+
+        System.out.println("\n특정 댓글의 User 정보 조회" + "-".repeat(30));
+        {
+            Comment comment = commentRepository.findById(1L).orElse(null);
+            System.out.println(comment.getUser());
+            System.out.println(comment.getUser().getAuthorities());
+        }
+
+        System.out.println("\n특정 글의 댓글 목록 조회" + "-".repeat(30));
+        {
+            Post post = postRepository.findById(1L).orElse(null);
+            //System.out.println(post.getComments());
+            var result = commentRepository.findByPost(post.getId(), Sort.by(Sort.Order.desc("id")));
             System.out.println(result);
         }
 

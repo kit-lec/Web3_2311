@@ -11,5 +11,6 @@ INSERT INTO t7_authority(name) VALUES('aaa'), ('bbb');
 SELECT * FROM t7_authority ;
 SELECT * FROM t7_user;
 SELECT * FROM t7_user_authorities;
-SELECT * FROM t7_post ;
-SELECT * FROM t7_attachment ;
+SELECT * FROM t7_post ORDER BY id DESC;
+SELECT * FROM t7_attachment ORDER BY id DESC;
+SELECT * FROM t7_comment ORDER BY id DESC;

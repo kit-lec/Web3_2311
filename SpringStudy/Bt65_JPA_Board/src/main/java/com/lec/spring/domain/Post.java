@@ -63,6 +63,18 @@ public class Post extends BaseEntity{
     public void addFiles(Attachment... files) {
         Collections.addAll(fileList, files);
     }
+
+    // Post:Comment = 1:N
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "post_id")
+    @ToString.Exclude
+    @Builder.Default
+    private List<Comment> comments = new ArrayList<>();
+
+    public void addComments(Comment... comments){
+        Collections.addAll(this.comments, comments);
+    }
+
 }
 
 
